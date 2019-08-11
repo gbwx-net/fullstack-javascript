@@ -1,4 +1,6 @@
 /**
+ * From https://www.kevinleary.net/simple-node-static-server/
+ *	 
  * Static HTTP Server
  *
  * Create a static file server instance to serve files
