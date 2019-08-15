@@ -71,4 +71,16 @@ function getMessages()
 function updateView(messages)
 {
     // message.results = messages.results.reverse()
+    const table = $('.table tbody')
+    table.html(``)
+    $.each(messages.results, (index, value) =>
+    {
+        const trEl = (`<tr><td>
+            ${value.username}
+            </td><td>
+            ${value.message}
+            </td></tr>`)
+        table.append(trEl)
+    })
+    console.log(messages)
 }
