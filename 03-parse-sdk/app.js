@@ -1,86 +1,45 @@
-const parseAppId = '123'
-const parseRestKey = 'abc'
-const apiBase = `http://localhost:1337/parse`
-
-$(document).ready(function() 
-{
-    getMessages()
-    $('#send').click(function()
-    {
-        const $sendButton = $(this)
-        $sendButton.html ('<img src="img/spinner.gif" width="20"/>')
-        const username = $('input[name=username]').val()
-        const message = $('input[name=message])').val()
-        $.ajax(
-        {
-            url: `$[apiBase]/classes/MessageBoard`,
-            headers: 
-            {
-                'X-Parse-Application-Id': parseAppId,
-                'X-Parse-REST-API-Key': parseRestKey
-            },
-            contentType: 'application/json',
-            dataType: 'json',
-            processData: false,
-            data: JSON.stringify(
-            {
-                'username': username,
-                'message': message
-            }),
-            type: 'POST',
-            success: function()
-            {
-                console.log('sent')
-                getMessages()
-                $sendButton.html('SEND')
-            },
-            error: function()
-            {
-                console.log('error')
-                $sendButtone.html('SEND')
-            }
-        })
+$(document).ready(function() {
+  
+    // You define them when you start the Parse server
+    const parseApplicationId = '123'
+    const parseJavaScriptKey = 'abc'
+    
+    Parse.initialize(parseApplicationId, parseJavaScriptKey)
+    Parse.serverURL = 'http://localhost:1337/parse'
+  
+    const Test = Parse.Object.extend('Test')
+    const test = new Test()
+    const query = new Parse.Query(Test)
+  
+    $('.btn-save').click(function(){
+      let data
+      try {
+         data = JSON.parse($('textarea').val())
+      } catch (e) {
+        alert('Invalid JSON')
+      }
+      if (!data) return false
+      test.save(data, {
+      success: (result) => {
+        console.log('Parse.com object is saved: ', result)
+        $('.log').html(JSON.stringify(result, null, 2))
+        //alternatively you could use alert('Parse object is saved')
+      },
+      error: (error) => {
+        console.log(`Error! Parse.com object is not saved: ${error}`)
+      }
+      })
     })
-})
-
-function getMessages()
-{
-    $.ajax(
-    {
-        url: `${apiBase}/classes/MessageBoard?limit=1000`,
-        headers:
-        {
-            'X-Parse-Application-Id': parseAppId,
-            'X-Parse-REST-API-Key': parseRestKey
+  
+    $('.btn-get').click(function(){
+      query.find({
+        success: function(results) {
+          $('.log').html(JSON.stringify(results, null, 2))
         },
-        contentType: 'application/json',
-        dataType: 'json',
-        type: 'GET',
-        success: (data) => 
-        {
-            console.log('get')
-            updateView(data)
-        },
-        error: () =>
-        {
-            console.log('error')
+        error: function(error) {
+          alert(`Error: ${error.code} ${error.message}`)
         }
+      })
     })
-}
-
-function updateView(messages)
-{
-    // message.results = messages.results.reverse()
-    const table = $('.table tbody')
-    table.html(``)
-    $.each(messages.results, (index, value) =>
-    {
-        const trEl = (`<tr><td>
-            ${value.username}
-            </td><td>
-            ${value.message}
-            </td></tr>`)
-        table.append(trEl)
-    })
-    console.log(messages)
-}
+  
+  })
