@@ -1,0 +1,10 @@
+Run node static from this dir with 'static'
+spawns http://localhost:8080 webserver
+Navigate browser to http://localhost:8080/fullstack-javascript/<DIR NAME>
+
+Ensure MongoDB is running
+'sudo service mongod status'
+Use 'sudo service mondog start' if not running
+
+Run parse server from this dir with 'parse-server --appID APPLICATION_ID --masterKey APPLICATION_KEY
+
